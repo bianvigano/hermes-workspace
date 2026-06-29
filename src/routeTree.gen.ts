@@ -109,9 +109,9 @@ import { Route as ApiClaudeJobsRouteImport } from './routes/api/claude-jobs'
 import { Route as ApiClaudeConfigRouteImport } from './routes/api/claude-config'
 import { Route as ApiChatEventsRouteImport } from './routes/api/chat-events'
 import { Route as ApiAuthCheckRouteImport } from './routes/api/auth-check'
-import { Route as ApiAuthRouteImport } from './routes/api/auth'
 import { Route as ApiArtifactsRouteImport } from './routes/api/artifacts'
 import { Route as ApiAgentBusRouteImport } from './routes/api/agent-bus'
+import { Route as ApiAuthIndexRouteImport } from './routes/api/auth/index'
 import { Route as ApiUpdateWorkspaceRouteImport } from './routes/api/update/workspace'
 import { Route as ApiUpdateStatusRouteImport } from './routes/api/update/status'
 import { Route as ApiUpdateAgentRouteImport } from './routes/api/update/agent'
@@ -162,6 +162,7 @@ import { Route as ApiDashboardOverviewRouteImport } from './routes/api/dashboard
 import { Route as ApiClaudeTasksTaskIdRouteImport } from './routes/api/claude-tasks.$taskId'
 import { Route as ApiClaudeProxySplatRouteImport } from './routes/api/claude-proxy/$'
 import { Route as ApiClaudeJobsJobIdRouteImport } from './routes/api/claude-jobs.$jobId'
+import { Route as ApiAuthLogoutRouteImport } from './routes/api/auth/logout'
 import { Route as ApiArtifactsArtifactIdRouteImport } from './routes/api/artifacts.$artifactId'
 import { Route as ApiSessionsSessionKeyStatusRouteImport } from './routes/api/sessions/$sessionKey.status'
 import { Route as ApiSessionsSessionKeyActiveRunRouteImport } from './routes/api/sessions/$sessionKey.active-run'
@@ -671,11 +672,6 @@ const ApiAuthCheckRoute = ApiAuthCheckRouteImport.update({
   path: '/api/auth-check',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiAuthRoute = ApiAuthRouteImport.update({
-  id: '/api/auth',
-  path: '/api/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiArtifactsRoute = ApiArtifactsRouteImport.update({
   id: '/api/artifacts',
   path: '/api/artifacts',
@@ -684,6 +680,11 @@ const ApiArtifactsRoute = ApiArtifactsRouteImport.update({
 const ApiAgentBusRoute = ApiAgentBusRouteImport.update({
   id: '/api/agent-bus',
   path: '/api/agent-bus',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthIndexRoute = ApiAuthIndexRouteImport.update({
+  id: '/api/auth/',
+  path: '/api/auth/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiUpdateWorkspaceRoute = ApiUpdateWorkspaceRouteImport.update({
@@ -939,6 +940,11 @@ const ApiClaudeJobsJobIdRoute = ApiClaudeJobsJobIdRouteImport.update({
   path: '/$jobId',
   getParentRoute: () => ApiClaudeJobsRoute,
 } as any)
+const ApiAuthLogoutRoute = ApiAuthLogoutRouteImport.update({
+  id: '/api/auth/logout',
+  path: '/api/auth/logout',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiArtifactsArtifactIdRoute = ApiArtifactsArtifactIdRouteImport.update({
   id: '/$artifactId',
   path: '/$artifactId',
@@ -1006,7 +1012,6 @@ export interface FileRoutesByFullPath {
   '/world': typeof WorldRoute
   '/api/agent-bus': typeof ApiAgentBusRoute
   '/api/artifacts': typeof ApiArtifactsRouteWithChildren
-  '/api/auth': typeof ApiAuthRoute
   '/api/auth-check': typeof ApiAuthCheckRoute
   '/api/chat-events': typeof ApiChatEventsRoute
   '/api/claude-config': typeof ApiClaudeConfigRoute
@@ -1084,6 +1089,7 @@ export interface FileRoutesByFullPath {
   '/chat/': typeof ChatIndexRoute
   '/settings/': typeof SettingsIndexRoute
   '/api/artifacts/$artifactId': typeof ApiArtifactsArtifactIdRoute
+  '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/claude-jobs/$jobId': typeof ApiClaudeJobsJobIdRoute
   '/api/claude-proxy/$': typeof ApiClaudeProxySplatRoute
   '/api/claude-tasks/$taskId': typeof ApiClaudeTasksTaskIdRoute
@@ -1134,6 +1140,7 @@ export interface FileRoutesByFullPath {
   '/api/update/agent': typeof ApiUpdateAgentRoute
   '/api/update/status': typeof ApiUpdateStatusRoute
   '/api/update/workspace': typeof ApiUpdateWorkspaceRoute
+  '/api/auth/': typeof ApiAuthIndexRoute
   '/api/hermesworld/reservations/confirm': typeof ApiHermesworldReservationsConfirmRoute
   '/api/mcp/$name/logs': typeof ApiMcpNameLogsRoute
   '/api/mcp/hub-sources/$id': typeof ApiMcpHubSourcesIdRoute
@@ -1167,7 +1174,6 @@ export interface FileRoutesByTo {
   '/world': typeof WorldRoute
   '/api/agent-bus': typeof ApiAgentBusRoute
   '/api/artifacts': typeof ApiArtifactsRouteWithChildren
-  '/api/auth': typeof ApiAuthRoute
   '/api/auth-check': typeof ApiAuthCheckRoute
   '/api/chat-events': typeof ApiChatEventsRoute
   '/api/claude-config': typeof ApiClaudeConfigRoute
@@ -1245,6 +1251,7 @@ export interface FileRoutesByTo {
   '/chat': typeof ChatIndexRoute
   '/settings': typeof SettingsIndexRoute
   '/api/artifacts/$artifactId': typeof ApiArtifactsArtifactIdRoute
+  '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/claude-jobs/$jobId': typeof ApiClaudeJobsJobIdRoute
   '/api/claude-proxy/$': typeof ApiClaudeProxySplatRoute
   '/api/claude-tasks/$taskId': typeof ApiClaudeTasksTaskIdRoute
@@ -1295,6 +1302,7 @@ export interface FileRoutesByTo {
   '/api/update/agent': typeof ApiUpdateAgentRoute
   '/api/update/status': typeof ApiUpdateStatusRoute
   '/api/update/workspace': typeof ApiUpdateWorkspaceRoute
+  '/api/auth': typeof ApiAuthIndexRoute
   '/api/hermesworld/reservations/confirm': typeof ApiHermesworldReservationsConfirmRoute
   '/api/mcp/$name/logs': typeof ApiMcpNameLogsRoute
   '/api/mcp/hub-sources/$id': typeof ApiMcpHubSourcesIdRoute
@@ -1330,7 +1338,6 @@ export interface FileRoutesById {
   '/world': typeof WorldRoute
   '/api/agent-bus': typeof ApiAgentBusRoute
   '/api/artifacts': typeof ApiArtifactsRouteWithChildren
-  '/api/auth': typeof ApiAuthRoute
   '/api/auth-check': typeof ApiAuthCheckRoute
   '/api/chat-events': typeof ApiChatEventsRoute
   '/api/claude-config': typeof ApiClaudeConfigRoute
@@ -1408,6 +1415,7 @@ export interface FileRoutesById {
   '/chat/': typeof ChatIndexRoute
   '/settings/': typeof SettingsIndexRoute
   '/api/artifacts/$artifactId': typeof ApiArtifactsArtifactIdRoute
+  '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/claude-jobs/$jobId': typeof ApiClaudeJobsJobIdRoute
   '/api/claude-proxy/$': typeof ApiClaudeProxySplatRoute
   '/api/claude-tasks/$taskId': typeof ApiClaudeTasksTaskIdRoute
@@ -1458,6 +1466,7 @@ export interface FileRoutesById {
   '/api/update/agent': typeof ApiUpdateAgentRoute
   '/api/update/status': typeof ApiUpdateStatusRoute
   '/api/update/workspace': typeof ApiUpdateWorkspaceRoute
+  '/api/auth/': typeof ApiAuthIndexRoute
   '/api/hermesworld/reservations/confirm': typeof ApiHermesworldReservationsConfirmRoute
   '/api/mcp/$name/logs': typeof ApiMcpNameLogsRoute
   '/api/mcp/hub-sources/$id': typeof ApiMcpHubSourcesIdRoute
@@ -1494,7 +1503,6 @@ export interface FileRouteTypes {
     | '/world'
     | '/api/agent-bus'
     | '/api/artifacts'
-    | '/api/auth'
     | '/api/auth-check'
     | '/api/chat-events'
     | '/api/claude-config'
@@ -1572,6 +1580,7 @@ export interface FileRouteTypes {
     | '/chat/'
     | '/settings/'
     | '/api/artifacts/$artifactId'
+    | '/api/auth/logout'
     | '/api/claude-jobs/$jobId'
     | '/api/claude-proxy/$'
     | '/api/claude-tasks/$taskId'
@@ -1622,6 +1631,7 @@ export interface FileRouteTypes {
     | '/api/update/agent'
     | '/api/update/status'
     | '/api/update/workspace'
+    | '/api/auth/'
     | '/api/hermesworld/reservations/confirm'
     | '/api/mcp/$name/logs'
     | '/api/mcp/hub-sources/$id'
@@ -1655,7 +1665,6 @@ export interface FileRouteTypes {
     | '/world'
     | '/api/agent-bus'
     | '/api/artifacts'
-    | '/api/auth'
     | '/api/auth-check'
     | '/api/chat-events'
     | '/api/claude-config'
@@ -1733,6 +1742,7 @@ export interface FileRouteTypes {
     | '/chat'
     | '/settings'
     | '/api/artifacts/$artifactId'
+    | '/api/auth/logout'
     | '/api/claude-jobs/$jobId'
     | '/api/claude-proxy/$'
     | '/api/claude-tasks/$taskId'
@@ -1783,6 +1793,7 @@ export interface FileRouteTypes {
     | '/api/update/agent'
     | '/api/update/status'
     | '/api/update/workspace'
+    | '/api/auth'
     | '/api/hermesworld/reservations/confirm'
     | '/api/mcp/$name/logs'
     | '/api/mcp/hub-sources/$id'
@@ -1817,7 +1828,6 @@ export interface FileRouteTypes {
     | '/world'
     | '/api/agent-bus'
     | '/api/artifacts'
-    | '/api/auth'
     | '/api/auth-check'
     | '/api/chat-events'
     | '/api/claude-config'
@@ -1895,6 +1905,7 @@ export interface FileRouteTypes {
     | '/chat/'
     | '/settings/'
     | '/api/artifacts/$artifactId'
+    | '/api/auth/logout'
     | '/api/claude-jobs/$jobId'
     | '/api/claude-proxy/$'
     | '/api/claude-tasks/$taskId'
@@ -1945,6 +1956,7 @@ export interface FileRouteTypes {
     | '/api/update/agent'
     | '/api/update/status'
     | '/api/update/workspace'
+    | '/api/auth/'
     | '/api/hermesworld/reservations/confirm'
     | '/api/mcp/$name/logs'
     | '/api/mcp/hub-sources/$id'
@@ -1980,7 +1992,6 @@ export interface RootRouteChildren {
   WorldRoute: typeof WorldRoute
   ApiAgentBusRoute: typeof ApiAgentBusRoute
   ApiArtifactsRoute: typeof ApiArtifactsRouteWithChildren
-  ApiAuthRoute: typeof ApiAuthRoute
   ApiAuthCheckRoute: typeof ApiAuthCheckRoute
   ApiChatEventsRoute: typeof ApiChatEventsRoute
   ApiClaudeConfigRoute: typeof ApiClaudeConfigRoute
@@ -2054,6 +2065,7 @@ export interface RootRouteChildren {
   ApiWorkspaceRoute: typeof ApiWorkspaceRoute
   ChatSessionKeyRoute: typeof ChatSessionKeyRoute
   ChatIndexRoute: typeof ChatIndexRoute
+  ApiAuthLogoutRoute: typeof ApiAuthLogoutRoute
   ApiClaudeProxySplatRoute: typeof ApiClaudeProxySplatRoute
   ApiDashboardOverviewRoute: typeof ApiDashboardOverviewRoute
   ApiExternalMemoryCandidatesRoute: typeof ApiExternalMemoryCandidatesRoute
@@ -2082,6 +2094,7 @@ export interface RootRouteChildren {
   ApiUpdateAgentRoute: typeof ApiUpdateAgentRoute
   ApiUpdateStatusRoute: typeof ApiUpdateStatusRoute
   ApiUpdateWorkspaceRoute: typeof ApiUpdateWorkspaceRoute
+  ApiAuthIndexRoute: typeof ApiAuthIndexRoute
   ApiRunsSessionKeyRunIdAbandonRoute: typeof ApiRunsSessionKeyRunIdAbandonRoute
 }
 
@@ -2787,13 +2800,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthCheckRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/auth': {
-      id: '/api/auth'
-      path: '/api/auth'
-      fullPath: '/api/auth'
-      preLoaderRoute: typeof ApiAuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/artifacts': {
       id: '/api/artifacts'
       path: '/api/artifacts'
@@ -2806,6 +2812,13 @@ declare module '@tanstack/react-router' {
       path: '/api/agent-bus'
       fullPath: '/api/agent-bus'
       preLoaderRoute: typeof ApiAgentBusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/': {
+      id: '/api/auth/'
+      path: '/api/auth'
+      fullPath: '/api/auth/'
+      preLoaderRoute: typeof ApiAuthIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/update/workspace': {
@@ -3158,6 +3171,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiClaudeJobsJobIdRouteImport
       parentRoute: typeof ApiClaudeJobsRoute
     }
+    '/api/auth/logout': {
+      id: '/api/auth/logout'
+      path: '/api/auth/logout'
+      fullPath: '/api/auth/logout'
+      preLoaderRoute: typeof ApiAuthLogoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/artifacts/$artifactId': {
       id: '/api/artifacts/$artifactId'
       path: '/$artifactId'
@@ -3449,7 +3469,6 @@ const rootRouteChildren: RootRouteChildren = {
   WorldRoute: WorldRoute,
   ApiAgentBusRoute: ApiAgentBusRoute,
   ApiArtifactsRoute: ApiArtifactsRouteWithChildren,
-  ApiAuthRoute: ApiAuthRoute,
   ApiAuthCheckRoute: ApiAuthCheckRoute,
   ApiChatEventsRoute: ApiChatEventsRoute,
   ApiClaudeConfigRoute: ApiClaudeConfigRoute,
@@ -3523,6 +3542,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiWorkspaceRoute: ApiWorkspaceRoute,
   ChatSessionKeyRoute: ChatSessionKeyRoute,
   ChatIndexRoute: ChatIndexRoute,
+  ApiAuthLogoutRoute: ApiAuthLogoutRoute,
   ApiClaudeProxySplatRoute: ApiClaudeProxySplatRoute,
   ApiDashboardOverviewRoute: ApiDashboardOverviewRoute,
   ApiExternalMemoryCandidatesRoute: ApiExternalMemoryCandidatesRoute,
@@ -3551,6 +3571,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiUpdateAgentRoute: ApiUpdateAgentRoute,
   ApiUpdateStatusRoute: ApiUpdateStatusRoute,
   ApiUpdateWorkspaceRoute: ApiUpdateWorkspaceRoute,
+  ApiAuthIndexRoute: ApiAuthIndexRoute,
   ApiRunsSessionKeyRunIdAbandonRoute: ApiRunsSessionKeyRunIdAbandonRoute,
 }
 export const routeTree = rootRouteImport

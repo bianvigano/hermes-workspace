@@ -7,26 +7,25 @@ import {
   isPasswordProtectionEnabled,
   storeSessionToken,
   verifyPassword,
-} from '../../server/auth-middleware'
+} from '../../../server/auth-middleware'
 import {
   getClientIp,
   rateLimit,
   rateLimitResponse,
   requireJsonContentType,
-} from '../../server/rate-limit'
+} from '../../../server/rate-limit'
 
 const AuthSchema = z.object({
   password: z.string().max(1000),
 })
 
-export const Route = createFileRoute('/api/auth')({
+export const Route = createFileRoute('/api/auth/')({
   server: {
     handlers: {
       POST: async ({ request }) => {
         const csrfCheck = requireJsonContentType(request)
         if (csrfCheck) return csrfCheck
 
-        // If password protection is disabled, reject auth attempts
         if (!isPasswordProtectionEnabled()) {
           return json(
             { ok: false, error: 'Authentication not required' },
@@ -34,7 +33,6 @@ export const Route = createFileRoute('/api/auth')({
           )
         }
 
-        // Rate limit: max 5 auth attempts per minute per IP
         const ip = getClientIp(request)
         if (!rateLimit(`auth:${ip}`, 5, 60_000)) {
           return rateLimitResponse()
@@ -52,12 +50,9 @@ export const Route = createFileRoute('/api/auth')({
           }
 
           const { password } = parsed.data
-
-          // Verify password
           const valid = verifyPassword(password)
 
           if (!valid) {
-            // Add small delay to prevent brute force
             await new Promise((resolve) => setTimeout(resolve, 1000))
             return json(
               { ok: false, error: 'Invalid password' },
@@ -65,11 +60,9 @@ export const Route = createFileRoute('/api/auth')({
             )
           }
 
-          // Generate session token
           const token = generateSessionToken()
           storeSessionToken(token)
 
-          // Return success with Set-Cookie header
           return json(
             { ok: true },
             {

@@ -19,6 +19,7 @@ import {
   PuzzleIcon,
   Rocket01Icon,
   Search01Icon,
+  Logout01Icon,
   Settings01Icon,
   Sun02Icon,
   UserGroupIcon,
@@ -1234,13 +1235,24 @@ function ChatSidebarComponent({
                 className="shrink-0 rounded-lg p-1.5 text-primary-400 hover:bg-primary-200 dark:hover:bg-neutral-800 hover:text-primary-600 dark:hover:text-neutral-300 transition-colors"
                 aria-label="Settings"
               >
+              </button>
+              <ThemeToggleMini />
+              <button
+                type="button"
+                onClick={async () => {
+                  await fetch("/api/auth/logout", { method: "POST" })
+                  window.location.reload()
+                }}
+                className="shrink-0 rounded-lg p-1.5 text-primary-400 hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-500 transition-colors"
+                aria-label="Logout"
+                title="Logout"
+              >
                 <HugeiconsIcon
-                  icon={Settings01Icon}
+                  icon={Logout01Icon}
                   size={16}
                   strokeWidth={1.5}
                 />
               </button>
-              <ThemeToggleMini />
             </div>
           )}
         </div>
